@@ -4,19 +4,19 @@ const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 8080; // default port 8080
 const bodyParser = require("body-parser");
+const methodOverride = require('method-override')
 
+app.use(methodOverride('_method'))
 app.use(bodyParser.urlencoded());
 
 //To specify that we will be using EJS templates, add the following line after defining your app variable
 app.set("view engine", "ejs");
 
-            // function generateRandomString(str) {
+// generateRandomString = function(str) {
+//   let num = Math.random().toString(36).substr(2, 5)
+//   return num
+// }
 
-            // }
-
-            // function getRandomArbitrary(min, max) {
-            //   return Math.random() * (max - min) + min;
-            // }
 
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
@@ -46,9 +46,14 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL);
 });
 
+//delete
+app.delete("/urls/:id", (req, res) => {
+  delete urlDatabase[req.params.id];
+  res.redirect("/urls");
+});
+
 //posts
-app.post("/urls", (req, res) => {
-  console.log(req.body);  // debug statement to see POST parameters
+app.post("/urls", (req, res) => {  // debug statement to see POST parameters
   res.send("Ok");         // Respond with 'Ok' (we will replace this)
 });
 
