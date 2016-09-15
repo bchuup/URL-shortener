@@ -12,11 +12,10 @@ app.use(bodyParser.urlencoded());
 //To specify that we will be using EJS templates, add the following line after defining your app variable
 app.set("view engine", "ejs");
 
-// generateRandomString = function(str) {
-//   let num = Math.random().toString(36).substr(2, 5)
-//   return num
-// }
-
+let generateRandomString = function(str) {
+  let num = Math.random().toString(36).substr(2, 5)
+  return num
+}
 
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
@@ -55,6 +54,15 @@ app.delete("/urls/:id", (req, res) => {
 //posts
 app.post("/urls", (req, res) => {  // debug statement to see POST parameters
   res.send("Ok");         // Respond with 'Ok' (we will replace this)
+});
+
+//puts
+app.put("/urls/:id", (req, res) => {
+  let longURL = req.body.URLtoSubmit
+  let shortURL = req.params.id
+  urlDatabase[shortURL] = longURL
+  // console.log(longURL, shortURL, urlDatabase[shortURL]);
+    res.redirect("/urls");
 });
 
 app.listen(PORT, () => {

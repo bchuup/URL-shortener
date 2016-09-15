@@ -5,11 +5,14 @@
     <% include partials/_header %>
   </head>
   <body>
-    <% for (var shortKey in urls){
-      var longURL = urls[shortKey]; %>
+    <% for (var shortURL in urls){
+      var longURL = urls[shortURL]; %>
 
-    <form method="POST" action="/urls/<%=shortKey%>?_method=DELETE">
-      <li> <%= shortKey %> - <%= longURL %> <button name="delete" type="submit">DELETE</button> </li>
+    <form method="POST" action="/urls/<%=shortURL%>?_method=DELETE">
+      <li> <%= shortURL %> - <%= longURL %>
+        <button name="delete" type="submit">DELETE</button>
+        <a href="http://localhost:8080/urls/<%=shortURL%>">edit</a>
+      </li>
     </form>
 
     <%}%>

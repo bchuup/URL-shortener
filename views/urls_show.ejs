@@ -1,6 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
   <body>
-    <p> <%= shortURL %> </p>
+
+
+   <h2> ShortURL: <%= shortURL %> </h2>
+
+    <form method="POST" action="/urls/<%=shortURL%>?_method=PUT" >
+
+     SUBMIT A URL THAT'S TOO DAMN LONG: <br>
+      <input type="text" name="URLtoSubmit"> <!-- submission field -->
+      <input type="submit" value="Submit">   <!-- button -->
+
+
+    </form>
+
+
+
   </body>
 </html>
