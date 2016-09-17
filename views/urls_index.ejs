@@ -7,15 +7,16 @@
   <body>
     <% for (var shortURL in urls){
       var longURL = urls[shortURL]; %>
+<li> <%= shortURL %> - <%= longURL %>
+  <form method="POST" action="/urls/<%=shortURL%>?_method=DELETE">
+      <button name="delete" type="submit">DELETE</button>
+  </form>
+  <form method="GET" action="/urls/<%=shortURL%>">
+    <button name="edit" type="submit">EDIT</button>
+  </form>
 
-    <form method="POST" action="/urls/<%=shortURL%>?_method=DELETE">
-      <li> <%= shortURL %> - <%= longURL %>
-        <button name="delete" type="submit">DELETE</button>
-        <a href="http://localhost:8080/urls/<%=shortURL%>">edit</a>
-      </li>
-    </form>
-
-    <%}%>
+</li>
+<%}%>
 
 
   </body>
