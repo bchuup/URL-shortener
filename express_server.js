@@ -1,10 +1,12 @@
+require('dotenv').config()
 var express = require("express");
 var app = express();
 var PORT = process.env.PORT || 8080; // default port 8080
 var bodyParser = require("body-parser");
 var methodOverride = require('method-override');
 var MongoClient = require("mongodb").MongoClient;
-var MONGODB_URI = "mongodb://127.0.0.1:27017/url_shortener";
+// var MONGODB_URI = "mongodb://127.0.0.1:27017/url_shortener";
+var MONGODB_URI = process.env.MONGODB_URI;
 
 app.use(methodOverride('_method'));
 app.use(bodyParser.urlencoded());
