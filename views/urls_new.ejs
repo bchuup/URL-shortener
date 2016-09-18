@@ -3,11 +3,17 @@
   <head></head>
   <body style="font-size:20px; padding:50px;">
     <% include partials/_header %>
+
+    <form method="GET" action="/urls" >
+      <input type="submit" value="Go to all your shorties">   <!-- button -->
+    </form>
+
     <form method="POST" action="/urls" style="margin:150px;">
     SUBMIT A URL THAT'S TOO DAMN LONG: <br>
       <label for="longURL">Enter a URL:</label>
       <input id="longURL" type="text" name="URLtoSubmit" placeholder="http://" style="width: 300px">
       <input type="submit" value="Submit">
     </form>
+
   </body>
 </html>
