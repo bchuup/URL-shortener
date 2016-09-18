@@ -8,6 +8,8 @@ var methodOverride = require('method-override');
 var MongoClient = require("mongodb").MongoClient;
 var MONGODB_URI = "mongodb://127.0.0.1:27017/url_shortener";
 
+
+
 app.use(methodOverride('_method'));
 app.use(bodyParser.urlencoded());
 
@@ -26,7 +28,7 @@ var retrieveLong = require("./retrieveLong.js")
 // };
 
 app.get("/", (req, res) => {
-  res.end("Hello!");
+  res.redirect("/urls/new");
 });
 
 app.get("/urls", (req, res) => {
@@ -35,13 +37,11 @@ app.get("/urls", (req, res) => {
   var collection = db.collection("urls");
 
   collection.find().toArray((err, results) =>{
-    // console.log(results)
     var resultingObj = {}
     for (var object of results){
       resultingObj[object.shortURL] = object.longURL
     }
       var index = {urls: resultingObj};
-      console.log(templateVars)
       res.render("urls_index", index);
     });
   })
@@ -52,30 +52,37 @@ app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
 
-
 app.get("/urls/:id", (req, res) => {
-  var shortURL = req.params.id
+var shortURL = req.params.id
+  MongoClient.connect(MONGODB_URI, (err,db) => {
+    var database = db;
+    var collection = db.collection("urls");
+    collection.find({shortURL:shortURL}).toArray((err, results) =>{
+      if (! results[0]) {
+        res.render("no_short")
+      }
+      var resultingObj = results[0]
+        var templateVars = { urls: resultingObj }
+      res.render("urls_show", resultingObj);
+    })
+  })
+})
 
+app.get("/u/:shortURL", (req, res) => {
   MongoClient.connect(MONGODB_URI, (err,db) => {
     var database = db;
     var collection = db.collection("urls");
     collection.find({shortURL:shortURL}).toArray((err, results) =>{
       var resultingObj = results[0]
 
-        // console.log(results)
-        console.log(resultingObj)
-        // var templateVars = { urls: resultingObj }
-        // console.log(templateVars)
-      res.render("urls_show", resultingObj);
-      // res.end("hello")
+          // var templateVars = { urls: resultingObj }
+
+    var longURL = urlDatabase[req.params.shortURL]
+    res.redirect(longURL);
     })
   })
 })
 
-app.get("/u/:shortURL", (req, res) => {
-  var longURL = urlDatabase[req.params.shortURL]
-  res.redirect(longURL);
-});
 
 //delete
 app.delete("/urls/:id", (req, res) => {
@@ -96,25 +103,26 @@ app.delete("/urls/:id", (req, res) => {
 });
 
 //posts
-app.post("/urls/create", (req, res) => {  // debug statement to see POST parameters // call random generate function
-  var shortURL = req.params.id
+app.post("/urls", (req, res) => {  // debug statement to see POST parameters // call random generate function
+  var shortURL = generateRandomString()
   var longURL = req.body.URLtoSubmit
-  console.log(req.body)
-  console.log(longURL)
+  console.log(longURL);
   MongoClient.connect(MONGODB_URI, (err,db) => {
     var database = db;
     var collection = db.collection("urls");
     collection.insert({shortURL: shortURL, longURL: longURL})
     collection.find().toArray((err, results) =>{
-      var resultingObj = {}
-      for (var object of results){
-        resultingObj[object.shortURL] = object.longURL
-      }
-        var index = {urls: resultingObj};
-        res.render("urls_index", index);
-    });
+      console.log(results)
+    var resultingObj = {}
+    for (var object of results){
+      resultingObj[object.shortURL] = object.longURL
+    }
+      var redirectPath = `/urls/${shortURL}`
+      // var index = {urls: resultingObj};
+      res.redirect(redirectPath);
+    })
   })
-});
+})
 
 //puts
 app.put("/urls/:id", (req, res) => {
@@ -125,7 +133,7 @@ app.put("/urls/:id", (req, res) => {
     var collection = db.collection("urls");
     collection.update({shortURL: shortURL}, {shortURL: shortURL, longURL: longURL})
     collection.find().toArray((err, results) =>{
-      // console.log(results)
+
       var resultingObj = {}
       for (var object of results){
         resultingObj[object.shortURL] = object.longURL
