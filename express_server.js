@@ -95,7 +95,6 @@ app.delete("/urls/:id", (req, res) => {
 app.post("/urls", (req, res) => {  // debug statement to see POST parameters // call random generate function
   var shortURL = generateRandomString()
   var longURL = req.body.URLtoSubmit
-  console.log(longURL);
   MongoClient.connect(MONGODB_URI, (err,db) => {
     var database = db;
     var collection = db.collection("urls");

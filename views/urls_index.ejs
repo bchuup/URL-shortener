@@ -4,19 +4,21 @@
     <!-- path is relative to current file -->
     <% include partials/_header %>
   </head>
+
   <body>
+    <form method="GET" action="/urls/new" >
+      <input type="submit" value="Make a new shorty">   <!-- button -->
+    </form>
+
     <% for (var shortURL in urls){
       var longURL = urls[shortURL]; %>
-
-
-    <ul><%= shortURL %> - <%= longURL %>
-      <form method="POST" action="/urls/<%=shortURL%>?_method=DELETE">
-          <button name="delete" align="right" type="submit">DELETE</button>
-      </form><form method="GET" action="/urls/<%=shortURL%>">
-        <button name="edit" type="submit">EDIT</button>
-      </form>
-    </ul>
-
+      <ul><%= shortURL %> - <%= longURL %>
+        <form method="POST" action="/urls/<%=shortURL%>?_method=DELETE">
+            <button name="delete" align="right" type="submit">DELETE</button>
+        </form><form method="GET" action="/urls/<%=shortURL%>">
+          <button name="edit" type="submit">EDIT</button>
+        </form>
+      </ul>
     <%}%>
 
 

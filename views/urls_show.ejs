@@ -6,12 +6,14 @@
    <h2> ShortURL: <%= shortURL %> </h2>
    <h3> <%= longURL %> </h3>
 
+    <form method="GET" action="/urls" >
+      <input type="submit" value="Go to all your shorties">   <!-- button -->
+    </form>
+
     <form method="POST" action="/urls/<%=shortURL%>?_method=PUT" >
     Wanna use this shorty for another url? Enter another: <br>
       <input type="text" name="URLtoSubmit"> <!-- submission field -->
       <input type="submit" value="Submit">   <!-- button -->
-
-
     </form>
 
 
