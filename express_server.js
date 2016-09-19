@@ -17,6 +17,7 @@ var generateRandomString = (str) => {
   return num;
 }
 
+//connect to database
 var collection
 MongoClient.connect(MONGODB_URI, (err,db) => {
   var database = db;
