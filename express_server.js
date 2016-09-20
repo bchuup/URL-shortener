@@ -1,18 +1,17 @@
 require('dotenv').config()
 var express = require("express");
 var app = express();
-var PORT = process.env.PORT || 8080; // default port 8080
 var bodyParser = require("body-parser");
 var methodOverride = require('method-override');
 var MongoClient = require("mongodb").MongoClient;
-// var MONGODB_URI = "mongodb://127.0.0.1:27017/url_shortener";
 var MONGODB_URI = process.env.MONGODB_URI;
+var PORT = process.env.PORT || 8080; // default port 8080
 
 app.use(methodOverride('_method'));
 app.use(bodyParser.urlencoded());
 app.set("view engine", "ejs");
 
-var generateRandomString = (str) => {
+var generateRandomString = () => {
   var num = Math.random().toString(36).substr(2, 5);
   return num;
 }
@@ -35,8 +34,8 @@ app.get("/urls", (req, res) => {
   for (var object of results){
     resultingObj[object.shortURL] = object.longURL
   }
-    var index = {urls: resultingObj};
-    res.render("urls_index", index);
+  var index = {urls: resultingObj};
+  res.render("urls_index", index);
   });
 });
 
@@ -44,9 +43,9 @@ app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
 
-app.get("/urls/:id", (req, res) => {
-  var shortURL = req.params.id
-  collection.findOne({shortURL:shortURL}, (err, results) =>{
+app.get("/urls/:shortURL", (req, res) => {
+  var shortURL = req.params.shortURL
+  collection.findOne({shortURL:shortURL}, (err, results) => {
     if (!results) {
       res.render("no_short")
     } else {
@@ -59,7 +58,7 @@ app.get("/urls/:id", (req, res) => {
 
 app.get("/u/:shortURL", (req, res) => {
   var shortURL = req.params.shortURL
-  collection.findOne({shortURL:shortURL}, (err, results) =>{
+  collection.findOne({shortURL:shortURL}, (err, results) => {
     if (results == null) {
       res.render("no_short")
     } else {
@@ -74,8 +73,8 @@ app.get("/u/:shortURL", (req, res) => {
 })
 
 //delete
-app.delete("/urls/:id", (req, res) => {
-  var shortURL = req.params.id
+app.delete("/urls/:shortURL", (req, res) => {
+  var shortURL = req.params.shortURL
   collection.remove({shortURL:shortURL})
   collection.find().toArray((err, results) =>{
     var resultingObj = {}
@@ -88,33 +87,20 @@ app.delete("/urls/:id", (req, res) => {
 });
 
 //posts
-app.post("/urls", (req, res) => {  // debug statement to see POST parameters // call random generate function
+app.post("/urls", (req, res) => {
   var shortURL = generateRandomString()
   var longURL = req.body.URLtoSubmit
-    collection.insert({shortURL: shortURL, longURL: longURL})
-    collection.find().toArray((err, results) =>{
-      var resultingObj = {}
-      for (var object of results){
-        resultingObj[object.shortURL] = object.longURL
-      }
-      var redirectPath = `/urls/${shortURL}`
-      res.redirect(redirectPath);
-    })
+  collection.insert({shortURL: shortURL, longURL: longURL})
+  var redirectPath = `/urls/${shortURL}`
+  res.redirect(redirectPath);
 })
 
 //puts
-app.put("/urls/:id", (req, res) => {
+app.put("/urls/:shortURL", (req, res) => {
   var longURL = req.body.URLtoSubmit
-  var shortURL = req.params.id
+  var shortURL = req.params.shortURL
   collection.update({shortURL: shortURL}, {shortURL: shortURL, longURL: longURL})
-  collection.find().toArray((err, results) =>{
-    var resultingObj = {}
-    for (var object of results){
-      resultingObj[object.shortURL] = object.longURL
-    }
-      var index = {urls: resultingObj};
-      res.render("urls_index", index);
-  });
+  res.redirect("/urls");
 });
 
 app.listen(PORT, () => {

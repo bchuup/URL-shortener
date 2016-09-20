@@ -3,12 +3,10 @@
   <body>
 
 
-   <h2> ShortURL: <%= shortURL %> </h2>
-   <h3> <%= longURL %> </h3>
+    <h2> ShortURL: <%= shortURL %> </h2>
+    <h3> <%= longURL %> </h3>
 
-    <form method="GET" action="/urls" >
-      <input type="submit" value="Go to all your shorties">   <!-- button -->
-    </form>
+    <a href="/urls">Go to all your shorties</a>
 
     <form method="POST" action="/urls/<%=shortURL%>?_method=PUT" >
     Wanna use this shorty for another url? Enter another: <br>
