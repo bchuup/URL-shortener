@@ -1,2 +1,17 @@
  <!-- views/partials/header.ejs -->
-<h1> SIZE MATTERS </h1>
+<h1> LESS is MORE </h1>
+  <% if (username === undefined){
+        login_message = 'Login!'
+      } else {login_message = 'Welcome ' + username}
+
+  %>
+    <h2> <%= login_message %> </h2>
+  <form method="POST" action="/login">
+    <input type="text" name="username" style="width: 300px">
+    <button name="submitLogin" type="submit">login</button>
+  </form>
+
+
+  <form method="POST" action="/logout">
+    <button name="submitLogout" type="submit">logout</button>
+  </form>

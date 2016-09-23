@@ -4,11 +4,13 @@ var app = express();
 var bodyParser = require("body-parser");
 var methodOverride = require('method-override');
 var MongoClient = require("mongodb").MongoClient;
+var cookieParser = require('cookie-parser');
 var MONGODB_URI = process.env.MONGODB_URI;
 var PORT = process.env.PORT || 8080; // default port 8080
 
 app.use(methodOverride('_method'));
 app.use(bodyParser.urlencoded());
+app.use(cookieParser());
 app.set("view engine", "ejs");
 
 var generateRandomString = () => {
@@ -34,13 +36,14 @@ app.get("/urls", (req, res) => {
   for (var object of results){
     resultingObj[object.shortURL] = object.longURL
   }
-  var index = {urls: resultingObj};
+  var index = {urls: resultingObj, username: req.cookies["username"]};
   res.render("urls_index", index);
   });
 });
 
 app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
+  index = {username: req.cookies["username"]};
+  res.render("urls_new", index);
 });
 
 app.get("/urls/:shortURL", (req, res) => {
@@ -50,7 +53,7 @@ app.get("/urls/:shortURL", (req, res) => {
       res.render("no_short")
     } else {
     var resultingObj = results
-    var templateVars = { urls: resultingObj }
+    var templateVars = { urls: resultingObj, username: req.cookies["username"]}
     res.render("urls_show", resultingObj);
     }
   })
@@ -81,7 +84,7 @@ app.delete("/urls/:shortURL", (req, res) => {
     for (var object of results){
       resultingObj[object.shortURL] = object.longURL
     }
-    var templateVars = { urls: resultingObj }
+    var templateVars = { urls: resultingObj, username: req.cookies["username"]}
     res.render("urls_index", templateVars);
   });
 });
@@ -94,6 +97,17 @@ app.post("/urls", (req, res) => {
   var redirectPath = `/urls/${shortURL}`
   res.redirect(redirectPath);
 })
+
+app.post("/login", (req, res) => {
+  res.cookie('username', req.body.username)
+  res.redirect("/");
+})
+
+app.post("/logout", (req, res) => {
+  res.clearCookie('username');
+  res.redirect("/");
+})
+
 
 //puts
 app.put("/urls/:shortURL", (req, res) => {
